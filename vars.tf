@@ -1,6 +1,17 @@
+variable "os_user_name" {
+  description = "Your Openstack user name"
+}
 
-variable "digitalocean_token" {
-  description = "Your DigitalOcean API key"
+variable "os_password" {
+  description = "Your Openstack password"
+}
+
+variable "os_tenant_name" {
+  description = "Your Openstack tenant name"
+}
+
+variable "os_auth_url" {
+  description = ""
 }
 
 variable "ssh_key_fingerprint" {
@@ -8,32 +19,32 @@ variable "ssh_key_fingerprint" {
 }
 
 variable "region" {
-  description = "DigitalOcean Region"
-  default = "NYC2"
+  description = "Your Openstack region"
+  default = "fr1"
 }
 
-variable "agent_size" {
-  description = "DCOS Agent Droplet Size"
-  default = "4GB"
+variable "agent_flavor_name" {
+  description = "DCOS Agent flavor"
+  default = "n2.cw.standard-4"
 }
 
-variable "master_size" {
-  description = "DCOS Master Droplet Size"
-  default = "4GB"
+variable "master_flavor_name" {
+  description = "DCOS Master flavor"
+  default = "n2.cw.standard-4"
 }
 
-variable "boot_size" {
-  description = "DCOS Boot Server Droplet Size"
-  default = "4GB"
+variable "boot_flavor_name" {
+  description = "DCOS Boot Server flavor"
+  default = "n2.cw.standard-4"
 }
 
 variable "dcos_cluster_name" {
   description = "Name of your cluster. Alpha-numeric and hyphens only, please."
-  default = "digitalocean-dcos"
+  default = "os-dcos"
 }
 
 variable "dcos_master_count" {
-  default = "3"
+  default = "1"
   description = "Number of master nodes. 1, 3, or 5."
 }
 
@@ -49,7 +60,7 @@ variable "dcos_public_agent_count" {
 
 variable "dcos_ssh_public_key_path" {
   description = "Path to your public SSH key path"
-  default = "./do-key.pub"
+  default = "./os-key.pub"
 }
 
 variable "dcos_installer_url" {
@@ -59,5 +70,5 @@ variable "dcos_installer_url" {
 
 variable "dcos_ssh_key_path" {
   description = "Path to your private SSH key for the project"
-  default = "./do-key"
+  default = "./os-key"
 }

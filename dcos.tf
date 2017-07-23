@@ -1,5 +1,55 @@
-provider "digitalocean" {
-  token = "${var.digitalocean_token}"
+provider "openstack" {
+  user_name = "${var.os_user_name}"
+  password = "${var.os_password}"
+  tenant_name = "${var.os_tenant_name}"
+  auth_url = "${var.os_auth_url}"
+}
+
+resource "openstack_compute_instance_v2" "dcos_bootstrap" {
+  name = "${format("${var.dcos_cluster_name}-bootstrap-%02d", count.index)}"
+
+  image_name = "CoreOS Stable 1296.6"
+  flavor_name = "${var.boot_flavor_name}"
+  key_pair = "${var.ssh_key_fingerprint}"
+
+  user_data     = "#cloud-config\n\nssh_authorized_keys:\n  - \"${file("${var.dcos_ssh_public_key_path}")}\"\n"
+  region      = "${var.region}"
+
+  provisioner "local-exec" {
+    command = "rm -rf ./os-install.sh"
+  }
+  provisioner "local-exec" {
+    command = "echo BOOTSTRAP=\"${digitalocean_droplet.dcos_bootstrap.ipv4_address}\" >> ips.txt"
+  }
+  provisioner "local-exec" {
+    command = "echo CLUSTER_NAME=\"${var.dcos_cluster_name}\" >> ips.txt"
+  }  
+  provisioner "remote-exec" {
+  inline = [
+    "wget -q -O dcos_generate_config.sh -P $HOME ${var.dcos_installer_url}",
+    "mkdir $HOME/genconf"
+    ]
+  }
+  provisioner "local-exec" {
+    command = "./make-files.sh"
+  }
+  provisioner "local-exec" {
+    command = "sed -i -e '/^- *$/d' ./config.yaml"
+  }
+  provisioner "file" {
+    source = "./ip-detect"
+    destination = "$HOME/genconf/ip-detect"
+  }
+  provisioner "file" {
+    source = "./config.yaml"
+    destination = "$HOME/genconf/config.yaml"
+  }
+  provisioner "remote-exec" {
+    inline = ["sudo bash $HOME/dcos_generate_config.sh",
+              "docker run -d -p 4040:80 -v $HOME/genconf/serve:/usr/share/nginx/html:ro nginx 2>/dev/null",
+              "docker run -d -p 2181:2181 -p 2888:2888 -p 3888:3888 --name=dcos_int_zk jplock/zookeeper 2>/dev/null"
+              ]
+  }
 }
 
 resource "digitalocean_droplet" "dcos_bootstrap" {

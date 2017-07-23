@@ -1,29 +1,25 @@
-# digitalocean-terraform
-Terraform scripts for digitalocean.com, based on [packet-terraform](https://github.com/mesosphere/packet-terraform)
+# openstack-dcos-terraform
+Terraform scripts for Openstack, based on [digitalocean-dcos-terraform](https://github.com/jmarhee/digitalocean-dcos-terraform)
 
 ### This repo holds [Terraform](https://www.terraform.io/) scripts to create a
-1, 3, or 5 master DCOS cluster on the [digitalocean.com](https://digitalocean.com/)
+1, 3, or 5 master DCOS cluster using the [openstack](https://www.openstack.org)
 provider.
 
 ##### To use:
 
 Clone or download repo.
 
-Generate a `do-key` keypair (with an empty passphrase):
+Generate a `os-key` keypair (with an empty passphrase):
 
 ```bash
-ssh-keygen -t rsa -P '' -f ./do-key
+ssh-keygen -t rsa -P '' -f ./os-key
 ```
 
 Copy `sample.terraform.tfvars` to `terraform.tfvars` and insert your variables.
 
-Initially, a Digital Ocean account only allows 5 Droplets, which is not sufficient
-for this experiment. It is possible to increase this limit to 10 on the
-[Digital Ocean profile page](https://cloud.digitalocean.com/settings/profile#).
-
 Run `terraform apply`
 
-In `terraform.tfvars` provide the fingerprint for your public SSH key loaded into DigitalOcean.
+In `terraform.tfvars` provide the fingerprint for your public SSH key loaded into Openstack.
 
 ##### Theory of Operation:
 

@@ -29,7 +29,7 @@ FIN
 
 # Make a script
 
-cat > do-install.sh << FIN
+cat > os-install.sh << FIN
 #!/usr/bin/env bash
 mkdir /tmp/dcos && cd /tmp/dcos
 printf "Waiting for installer to appear at Bootstrap URL"
